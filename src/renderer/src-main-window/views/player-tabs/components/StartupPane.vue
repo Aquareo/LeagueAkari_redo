@@ -115,7 +115,6 @@ import { profileIconUri } from '@renderer-shared/shards/league-client/game-data-
 import { useSelfUpdateStore } from '@renderer-shared/shards/self-update/store'
 import { useSgpStore } from '@renderer-shared/shards/sgp/store'
 import { UxCommandLine } from '@shared/shards/league-client-ux'
-import { getSgpServerId } from '@shared/utils/sgp'
 import { ChevronRight20Filled, PlugConnected24Filled, Search20Regular, Flash20Filled } from '@vicons/fluent'
 import { ToolFilled } from '@vicons/antd'
 import { useTranslation } from 'i18next-vue'
