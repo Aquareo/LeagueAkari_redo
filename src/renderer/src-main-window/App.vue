@@ -182,13 +182,19 @@ app.onApplicationMenuSettingsClick(() => {
   min-width: var(--la-app-min-width);
   min-height: var(--la-app-min-height);
   isolation: isolate;
+  --enhanced-gold: #c9a96a;
+  --enhanced-gold-soft: rgba(201, 169, 106, 0.12);
 
   .app-frame__left {
-    background-color: rgba(189, 189, 189, 0.2);
+    background-color: rgba(243, 245, 250, 0.83);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(34, 45, 68, 0.09);
     z-index: 10;
 
     [data-theme='dark'] & {
-      background-color: rgba(0, 0, 0, 0.2);
+      background: linear-gradient(165deg, rgba(16, 27, 46, 0.96), rgba(9, 16, 30, 0.98));
+      border-right-color: rgba(201, 169, 106, 0.18);
     }
 
     [data-theme-id]:not([data-theme-id='light']):not([data-theme-id='dark']) & {
@@ -209,7 +215,18 @@ app.onApplicationMenuSettingsClick(() => {
       height: 0;
       flex: 1;
       overflow: hidden;
+      position: relative;
     }
+  }
+
+  /* A quiet frame around the workspace: visual only, no overlay on controls. */
+  [data-theme='dark'] & .app-frame__right-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 85% 0%, rgba(49, 99, 130, 0.08), transparent 54%);
+    z-index: -1;
   }
 
   .version-watermark {
