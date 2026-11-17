@@ -25,10 +25,10 @@
       </div>
     </div>
 
-    <div v-if="!mui.frontendSettings.sidebarCollapsed" class="app-sidebar__section-label">WORKSPACE</div>
-    <button class="app-sidebar__search" type="button" :title="'Search'" @click="openSearch()">
+    <div v-if="!mui.frontendSettings.sidebarCollapsed" class="app-sidebar__section-label">{{ t('workspace.sidebarGroup') }}</div>
+    <button class="app-sidebar__search" type="button" :title="t('workspace.search')" @click="openSearch()">
       <NIcon class="app-sidebar__search-icon"><Search20Regular /></NIcon>
-      <span class="app-sidebar__search-label">Search</span>
+      <span class="app-sidebar__search-label">{{ t('workspace.search') }}</span>
       <span class="app-sidebar__search-hint">⌕</span>
     </button>
 
