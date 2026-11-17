@@ -1,138 +1,99 @@
 <template>
-  <div class="enhanced-startup flex flex-col items-center justify-center">
-    <!-- logo placeholder -->
-    <NIcon class="startup-logo relative -left-2 mb-4 text-[96px]">
-      <AkariLogo />
-    </NIcon>
+  <div class="workspace-home">
+    <div class="workspace-container">
+      <header class="workspace-heading">
+        <div class="workspace-heading__brand">
+          <span class="workspace-heading__icon"><NIcon><AkariLogo /></NIcon></span>
+          <div class="workspace-heading__copy">
+            <div class="workspace-eyebrow">LEAGUE AKARI <span class="workspace-version">v{{ as.version }}</span></div>
+            <h1>Workspace</h1>
+            <p>Everything you need, without the clutter.</p>
+          </div>
+        </div>
+        <NButton v-if="showNewVersionBadge" size="small" secondary @click="handleShowUpdateModal">
+          {{ t('startup.launcher.newVersionAvailable') }}
+        </NButton>
+      </header>
 
-    <!-- app name -->
-    <div
-      class="enhanced-startup__title relative mb-1 font-['Comfortaa',sans-serif] text-2xl text-gray-800 dark:text-gray-100"
-    >
-      {{ t('appName', { ns: 'common' }) }}
-
-      <span
-        v-if="showNewVersionBadge"
-        class="bg-akari-500 absolute top-0 right-0 translate-x-[120%] -translate-y-1/6 cursor-pointer rounded px-1 py-px text-xs text-white transition-opacity hover:opacity-80"
-        @click.stop="handleShowUpdateModal"
-        >{{ t('startup.launcher.newVersionAvailable') }}</span
-      >
-    </div>
-
-    <!-- version -->
-    <div class="text-xs text-black/40 dark:text-white/40">v{{ as.version }}</div>
-
-    <div class="enhanced-startup__status" :class="{ 'is-connected': lcs.isConnected }" role="status">
-      <span class="enhanced-startup__status-dot" aria-hidden="true" />
-      {{
-        lcs.isConnected
-          ? lcs.summoner.me?.gameName || t('summoner', { ns: 'common' })
-          : lcs.isInConnectionLoop
-            ? t('navigation.sidebar.status.inConnectionLoop')
-            : t('navigation.sidebar.status.notConnected')
-      }}
-    </div>
-
-    <!-- spacer -->
-    <div class="h-8"></div>
-
-    <NScrollbar v-if="lcs.summoner.me || otherClients.length || launchItems.length" class="enhanced-startup__launchers h-fit! max-h-58 w-58!">
-      <!-- summoner -->
-      <div
-        v-if="lcs.summoner.me"
-        @click="handleOpenSelfTab"
-        class="group flex cursor-pointer items-center gap-4 rounded p-2 transition-colors not-last:mb-2 hover:bg-black/10 dark:hover:bg-white/10"
-      >
-        <LcuImage :src="profileIconUri(lcs.summoner.me.profileIconId)" class="size-5" />
-
-        <div class="min-w-0">
-          <div class="truncate">
-            <span class="mr-1 text-[11px] font-normal text-black/60 dark:text-white/60">
-              {{ t(`sgpServers.${sgps.availability.sgpServerId}`, { ns: 'common' }) }}
+      <section class="workspace-panel workspace-connection" aria-label="League client connection">
+        <div class="workspace-connection__main">
+          <span class="workspace-status-icon" :class="{ 'workspace-status-icon--online': lcs.isConnected }">
+            <span class="workspace-status-icon__dot" />
+          </span>
+          <div class="workspace-connection__text">
+            <span class="workspace-overline">CLIENT STATUS</span>
+            <strong v-if="lcs.isConnected">League Client</strong>
+            <strong v-else-if="lcs.isInConnectionLoop">{{ t('navigation.sidebar.status.inConnectionLoop') }}</strong>
+            <strong v-else>{{ t('navigation.sidebar.status.notConnected') }}</strong>
+            <span class="workspace-connection__caption">
+              {{ lcs.isConnected ? 'Connected and ready' : 'Launch League of Legends to connect' }}
             </span>
-            <span class="text-xs font-bold text-black/80 dark:text-white/80">{{
-              lcs.summoner.me.gameName
-            }}</span>
           </div>
-          <span class="text-xs text-black/40 dark:text-white/40"
-            >#{{ lcs.summoner.me.tagLine }}</span
-          >
         </div>
+        <NButton v-if="lcs.summoner.me" size="small" secondary @click="handleOpenSelfTab">
+          {{ t('navigation.sidebar.menu.match-history') }}
+          <template #icon><NIcon><ChevronRight20Filled /></NIcon></template>
+        </NButton>
+      </section>
 
-        <NIcon
-          class="ml-auto text-xs text-black/40 opacity-0 transition-opacity group-hover:opacity-100 dark:text-white/40"
-        >
-          <ChevronRight20Filled />
-        </NIcon>
+      <div class="workspace-section-heading">
+        <div><span class="workspace-overline">SHORTCUTS</span><h2>Quick access</h2></div>
+      </div>
+      <div class="workspace-actions">
+        <button type="button" class="workspace-action" @click="openSearch('summoner')">
+          <span class="workspace-action__symbol"><NIcon><Search20Regular /></NIcon></span>
+          <span class="workspace-action__copy"><strong>Find a player</strong><small>Search summoners and profiles</small></span>
+          <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
+        </button>
+        <button type="button" class="workspace-action" @click="navigate('automation')">
+          <span class="workspace-action__symbol"><NIcon><Flash20Filled /></NIcon></span>
+          <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.automation') }}</strong><small>Matchmaking and champion select</small></span>
+          <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
+        </button>
+        <button type="button" class="workspace-action" @click="navigate('toolkit')">
+          <span class="workspace-action__symbol"><NIcon><ToolFilled /></NIcon></span>
+          <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.toolkit') }}</strong><small>Client utilities and tools</small></span>
+          <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
+        </button>
       </div>
 
-      <template v-if="!lcs.isConnected">
-        <!-- other clients -->
-        <div
-          v-for="(client, index) of otherClients"
-          :key="client.pid"
-          class="flex cursor-pointer items-center gap-4 rounded p-2 transition-colors not-last:mb-2 hover:bg-black/10 dark:hover:bg-white/10"
-          @click="handleConnect(client)"
-        >
-          <LcuImage
-            :src="lcps.connectableClientExtraInfo[client.pid]?.profileIcon"
-            class="size-5"
-          />
-
-          <div class="min-w-0">
-            <div class="truncate">
-              <span class="mr-1 text-[11px] font-normal text-black/60 dark:text-white/60">
-                ({{ client.pid }})
-                {{
-                  t(`sgpServers.${getSgpServerId(client.region, client.rsoPlatformId)}`, {
-                    ns: 'common'
-                  })
-                }}
-              </span>
-              <span class="text-xs font-bold text-black/80 dark:text-white/80">{{
-                otherClientName(client, index)
-              }}</span>
-            </div>
-            <span class="text-xs text-black/40 dark:text-white/40">{{
-              otherClientTagLine(client)
-            }}</span>
-          </div>
-
-          <NSpin class="ml-auto" :size="12" v-if="lcs.connectingClient?.pid === client.pid" />
-          <NIcon v-else class="ml-auto text-sm text-black/60 dark:text-white/60">
-            <PlugConnected24Filled />
-          </NIcon>
-        </div>
-      </template>
-
-      <!-- shortcuts -->
-      <div
-        v-for="item of launchItems"
-        class="group flex cursor-pointer items-center gap-4 rounded p-2 transition-colors not-last:mb-2 hover:bg-black/10 dark:hover:bg-white/10"
-        @click="item.launch"
-      >
-        <img :src="item.imgUrl" class="size-5" />
-
-        <div class="min-w-0">
-          <div class="text-xs font-bold text-black/80 dark:text-white/80">{{ item.name }}</div>
-          <NEllipsis
-            :tooltip="{ placement: 'right' }"
-            class="text-[11px] text-black/40 dark:text-white/40"
-          >
-            <template #tooltip>
-              <span class="font-mono text-sm">{{ item.path }}</span>
-            </template>
-            <span class="font-mono">{{ item.path }}</span>
-          </NEllipsis>
-        </div>
-
-        <NIcon
-          class="ml-auto text-xs text-black/40 opacity-0 transition-opacity group-hover:opacity-100 dark:text-white/40"
-        >
-          <ChevronRight20Filled />
-        </NIcon>
+      <div class="workspace-section-heading workspace-section-heading--secondary">
+        <div><span class="workspace-overline">CONNECTED ACCOUNTS & APPS</span><h2>Continue where you left off</h2></div>
       </div>
-    </NScrollbar>
+      <section class="workspace-panel workspace-resources">
+        <button v-if="lcs.summoner.me" type="button" class="workspace-resource" @click="handleOpenSelfTab">
+          <LcuImage class="workspace-resource__image workspace-resource__image--avatar" :src="profileIconUri(lcs.summoner.me.profileIconId)" />
+          <span class="workspace-resource__copy">
+            <StreamerModeMaskedText>
+              <template #masked><strong>{{ t('summoner', { ns: 'common' }) }}</strong></template>
+              <strong>{{ lcs.summoner.me.gameName }} <span class="workspace-muted">#{{ lcs.summoner.me.tagLine }}</span></strong>
+            </StreamerModeMaskedText>
+            <small>{{ t(`sgpServers.${sgps.availability.sgpServerId}`, { ns: 'common' }) }}</small>
+          </span>
+          <NIcon class="workspace-resource__arrow"><ChevronRight20Filled /></NIcon>
+        </button>
+        <template v-if="!lcs.isConnected">
+          <button v-for="(client, index) in otherClients" :key="client.pid" type="button" class="workspace-resource" @click="handleConnect(client)">
+            <LcuImage class="workspace-resource__image workspace-resource__image--avatar" :src="lcps.connectableClientExtraInfo[client.pid]?.profileIcon" />
+            <span class="workspace-resource__copy">
+              <strong>{{ otherClientName(client, index) }} <span class="workspace-muted">{{ otherClientTagLine(client) }}</span></strong>
+              <small>League Client · PID {{ client.pid }}</small>
+            </span>
+            <NSpin v-if="lcs.connectingClient?.pid === client.pid" :size="14" />
+            <NIcon v-else class="workspace-resource__arrow"><PlugConnected24Filled /></NIcon>
+          </button>
+        </template>
+        <button v-for="item of launchItems" :key="item.path" type="button" class="workspace-resource" @click="item.launch">
+          <img class="workspace-resource__image" :src="item.imgUrl" alt="" />
+          <span class="workspace-resource__copy"><strong>{{ item.name }}</strong><small class="workspace-ellipsis">{{ item.path }}</small></span>
+          <NIcon class="workspace-resource__arrow"><ChevronRight20Filled /></NIcon>
+        </button>
+        <div v-if="!lcs.summoner.me && !otherClients.length && !launchItems.length" class="workspace-empty">
+          No clients or launchers found yet. Open the game client, or use the tools above.
+        </div>
+      </section>
+      <footer class="workspace-footer">AKARI ENHANCED <span>·</span> v{{ as.version }}</footer>
+    </div>
   </div>
 </template>
 
@@ -155,10 +116,13 @@ import { useSelfUpdateStore } from '@renderer-shared/shards/self-update/store'
 import { useSgpStore } from '@renderer-shared/shards/sgp/store'
 import { UxCommandLine } from '@shared/shards/league-client-ux'
 import { getSgpServerId } from '@shared/utils/sgp'
-import { ChevronRight20Filled, PlugConnected24Filled } from '@vicons/fluent'
+import { ChevronRight20Filled, PlugConnected24Filled, Search20Regular, Flash20Filled } from '@vicons/fluent'
+import { ToolFilled } from '@vicons/antd'
 import { useTranslation } from 'i18next-vue'
-import { NEllipsis, NIcon, NScrollbar, NSpin, useMessage } from 'naive-ui'
+import { NButton, NIcon, NSpin, useMessage } from 'naive-ui'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useMainWindowAppContext } from '@main-window/context'
 
 import { useLeagueClientPeekStore } from '@main-window/shards/league-client-peek/store'
 import { PlayerTabsRenderer } from '@main-window/shards/player-tabs'
@@ -181,6 +145,9 @@ const pt = useInstance(PlayerTabsRenderer)
 const sn = useInstance(SimpleNotificationsRenderer)
 
 const message = useMessage()
+const router = useRouter()
+const { openSearch } = useMainWindowAppContext()
+const navigate = (routeName: 'automation' | 'toolkit') => void router.push({ name: routeName })
 const { masked, summonerName: streamerSummonerName } = useStreamerModeMaskedText()
 
 const { navigateToTabByPuuid } = pt.useNavigateToTab()
@@ -282,72 +249,58 @@ const handleConnect = (cmd: UxCommandLine) => {
 </script>
 
 <style scoped>
-.enhanced-startup {
-  min-height: 100%;
-  position: relative;
-  padding: 36px 24px;
-  box-sizing: border-box;
+.workspace-home {
+  height: 100%;
   overflow: auto;
-  background: transparent;
-}
-
-.enhanced-startup__status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 13px;
-  border: 1px solid var(--akari-enhanced-stroke);
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 32px clamp(20px, 5vw, 64px) 24px;
+  box-sizing: border-box;
   color: var(--la-color-text-primary);
-  background: rgba(127, 143, 166, 0.07);
 }
-
-.enhanced-startup__status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #a0a9b9;
-  box-shadow: 0 0 0 3px rgba(160, 169, 185, 0.12);
-}
-
-.enhanced-startup__status.is-connected .enhanced-startup__status-dot {
-  background: #61c6a5;
-  box-shadow: 0 0 0 3px rgba(97, 198, 165, 0.15);
-}
-
-.enhanced-startup__title {
-  font-weight: 750;
-  letter-spacing: 0.03em;
-}
-
-.enhanced-startup__launchers {
-  width: min(100%, 350px) !important;
-  max-height: min(38vh, 280px) !important;
-  padding: 8px;
-  border: 1px solid rgba(110, 124, 148, 0.16);
-  border-radius: 10px;
-  background: rgba(127, 143, 166, 0.04);
-}
-
-.enhanced-startup__launchers :deep(.group) {
-  border-radius: 9px;
-  min-height: 44px;
-}
-
-[data-theme='dark'] .enhanced-startup__launchers {
-  border-color: rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.025);
-}
-
-.startup-logo {
-  color: #b08d51;
-  filter: none;
-
-  [data-theme='dark'] & {
-    color: #d6b776;
-    filter: none;
-  }
-}
+.workspace-container { width: min(100%, 980px); margin: 0 auto; }
+.workspace-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 28px; }
+.workspace-heading__brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.workspace-heading__icon { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 12px; display: grid; place-items: center; color: #c7a86e; background: rgba(158, 142, 111, .1); font-size: 28px; border: 1px solid var(--workspace-border); }
+.workspace-heading__copy h1 { font-size: 25px; letter-spacing: -.035em; font-weight: 700; margin: 3px 0 4px; line-height: 1.25; }
+.workspace-heading__copy p { font-size: 13px; opacity: .62; margin: 0; line-height: 1.5; }
+.workspace-eyebrow,.workspace-overline { display: block; font-size: 10px; font-weight: 750; letter-spacing: .13em; opacity: .5; }
+.workspace-version { font-weight: 500; letter-spacing: normal; margin-left: 5px; }
+.workspace-panel { background: var(--workspace-surface); border: 1px solid var(--workspace-border); border-radius: 10px; }
+.workspace-connection { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; }
+.workspace-connection__main { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.workspace-status-icon { width: 38px; height: 38px; flex: 0 0 38px; background: var(--workspace-subtle); border-radius: 9px; display: grid; place-items: center; }
+.workspace-status-icon__dot { width: 10px; height: 10px; border-radius: 50%; background: #8c959f; box-shadow: 0 0 0 4px rgba(140,149,159,.14); }
+.workspace-status-icon--online .workspace-status-icon__dot { background: #3fb883; box-shadow: 0 0 0 4px rgba(63,184,131,.16); }
+.workspace-connection__text,.workspace-resource__copy { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.workspace-connection__text strong { font-size: 14px; font-weight: 650; }
+.workspace-connection__caption { font-size: 12px; opacity: .58; }
+.workspace-section-heading { margin: 32px 0 14px; }
+.workspace-section-heading--secondary { margin-top: 30px; }
+.workspace-section-heading h2 { font-size: 16px; font-weight: 700; margin: 5px 0 0; letter-spacing: -.015em; }
+.workspace-actions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.workspace-action { min-width: 0; display: flex; align-items: flex-start; text-align: left; gap: 12px; padding: 17px 14px; background: var(--workspace-surface); border: 1px solid var(--workspace-border); border-radius: 10px; color: inherit; cursor: pointer; transition: border-color 150ms ease, background 150ms ease; font: inherit; }
+.workspace-action:hover,.workspace-resource:hover { background: var(--workspace-hover); border-color: var(--workspace-border-hover); }
+.workspace-action:focus-visible,.workspace-resource:focus-visible { outline: 2px solid #579ae7; outline-offset: 2px; }
+.workspace-action__symbol { flex: 0 0 32px; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-size: 18px; background: var(--workspace-subtle); }
+.workspace-action__copy { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.workspace-action__copy strong { font-size: 13px; font-weight: 650; }
+.workspace-action__copy small { font-size: 11px; opacity: .57; line-height: 1.5; }
+.workspace-action__arrow { opacity: .35; margin-top: 8px; }
+.workspace-resources { overflow: hidden; }
+.workspace-resource { width: 100%; display: flex; gap: 13px; padding: 12px 16px; text-align: left; align-items: center; background: transparent; border: 0; border-bottom: 1px solid var(--workspace-border); color: inherit; cursor: pointer; font: inherit; transition: background 150ms ease; }
+.workspace-resource:last-child { border-bottom: 0; }
+.workspace-resource__image { width: 32px; height: 32px; object-fit: contain; flex: 0 0 32px; }
+.workspace-resource__image--avatar { border-radius: 50%; }
+.workspace-resource__copy { flex: 1; }
+.workspace-resource__copy strong { font-size: 13px; font-weight: 600; }
+.workspace-resource__copy small { font-size: 11px; opacity: .56; }
+.workspace-muted { font-weight: 400; opacity: .6; }
+.workspace-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; max-width: 100%; }
+.workspace-resource__arrow { opacity: .42; }
+.workspace-empty { padding: 22px; font-size: 12px; opacity: .6; line-height: 1.6; }
+.workspace-footer { margin: 28px 0 0; text-align: center; font-size: 10px; letter-spacing: .11em; opacity: .36; }
+.workspace-footer span { padding: 0 8px; }
+.workspace-home { --workspace-surface: rgba(255,255,255,.56); --workspace-subtle: rgba(86,99,117,.075); --workspace-border: rgba(31,42,56,.13); --workspace-border-hover: rgba(31,42,56,.27); --workspace-hover: rgba(95,107,127,.085); }
+[data-theme='dark'] .workspace-home { --workspace-surface: rgba(22,29,39,.78); --workspace-subtle: rgba(148,163,184,.105); --workspace-border: rgba(154,169,189,.17); --workspace-border-hover: rgba(167,190,220,.34); --workspace-hover: rgba(126,152,184,.11); }
+@media (max-width: 850px) { .workspace-actions { grid-template-columns: 1fr; } .workspace-home { padding: 22px 20px; } .workspace-heading__copy h1 {font-size:22px;} }
+@media (prefers-reduced-motion: reduce) { .workspace-action,.workspace-resource {transition: none;} }
 </style>
