@@ -1,11 +1,11 @@
 <template>
-  <div class="flex items-center">
+  <div class="enhanced-player-header flex items-center">
     <!-- name & something -->
     <div class="flex h-16 min-w-0 flex-1">
       <!-- profile icon / summoner level -->
       <div class="relative size-16">
         <LcuImage
-          class="size-full rounded"
+          class="enhanced-player-header__avatar size-full rounded"
           :src="summoner ? profileIconUri(summoner.profileIconId) : undefined"
         />
         <div
@@ -123,3 +123,25 @@ const handleTagSaved = async () => {
   await loadTags()
 }
 </script>
+
+<style scoped>
+.enhanced-player-header {
+  position: relative;
+  border: 1px solid rgba(125, 136, 154, 0.15);
+  border-radius: 14px;
+  padding: 12px 16px;
+  background: linear-gradient(112deg, rgba(181, 146, 88, 0.10), rgba(127, 143, 166, 0.045) 58%, transparent);
+  box-sizing: border-box;
+  min-height: 108px;
+}
+
+[data-theme='dark'] .enhanced-player-header {
+  border-color: rgba(201, 169, 106, 0.16);
+  background: linear-gradient(112deg, rgba(201, 169, 106, 0.12), rgba(14, 26, 44, 0.42) 64%, rgba(9, 18, 32, 0.12));
+}
+
+.enhanced-player-header__avatar {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+</style>
