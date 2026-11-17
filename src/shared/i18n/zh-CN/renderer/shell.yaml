@@ -217,3 +217,22 @@ startup:
 backgroundTasks:
   taskTitle: 正在进行 ({{count}})
   emptyPlaceholder: 无后台任务
+
+workspace:
+  title: 工作台
+  subtitle: 重要功能，一目了然。
+  clientStatus: 客户端状态
+  connected: 已连接，可以开始使用
+  disconnectedHint: 启动英雄联盟客户端后即可连接
+  shortcuts: 快捷入口
+  quickAccess: 常用功能
+  findPlayer: 查找玩家
+  findPlayerHint: 搜索玩家与个人资料
+  automationHint: 匹配与英雄选择自动化
+  toolkitHint: 客户端设置及实用工具
+  resources: 账号与应用
+  continue: 继续使用
+  clientName: 英雄联盟客户端
+  empty: 暂未发现客户端或启动器。请先启动游戏客户端，或使用上方工具。
+  sidebarGroup: 工作台
+  search: 搜索
