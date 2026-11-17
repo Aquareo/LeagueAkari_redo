@@ -106,7 +106,7 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 
   .indicator-rail {
     position: absolute;
@@ -119,11 +119,11 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
   }
 
   .indicator-rail__shape {
-    fill: #1ea90c;
+    fill: #a28249;
     transition: fill 0.2s;
 
     [data-theme='dark'] & {
-      fill: #26dd0e;
+      fill: #d6b776;
     }
   }
 
@@ -146,8 +146,8 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
     width: 100%;
     position: relative;
     align-items: center;
-    border-radius: 8px;
-    transition: background-color 0.2s;
+    border-radius: 10px;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
     box-sizing: border-box;
   }
 
@@ -169,7 +169,9 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
   }
 
   .menu-item__label {
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 550;
+    letter-spacing: 0.015em;
     text-wrap-mode: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -200,7 +202,8 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
       background-color: rgba(0, 0, 0, 0.05);
 
       [data-theme='dark'] & {
-        background-color: rgba(255, 255, 255, 0.05);
+        background-color: rgba(201, 169, 106, 0.09);
+        box-shadow: inset 0 0 0 1px rgba(201, 169, 106, 0.12);
       }
     }
   }
@@ -250,7 +253,8 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
       background-color: rgba(0, 0, 0, 0.08);
 
       [data-theme='dark'] & {
-        background-color: rgba(255, 255, 255, 0.05);
+        background: linear-gradient(90deg, rgba(201, 169, 106, 0.18), rgba(201, 169, 106, 0.05));
+        box-shadow: inset 0 0 0 1px rgba(201, 169, 106, 0.16);
       }
     }
   }
