@@ -285,10 +285,10 @@ const handleConnect = (cmd: UxCommandLine) => {
 .enhanced-startup {
   min-height: 100%;
   position: relative;
-  padding: 44px 24px;
+  padding: 36px 24px;
   box-sizing: border-box;
   overflow: auto;
-  background: radial-gradient(ellipse at 50% 28%, rgba(201, 169, 106, 0.085), transparent 48%);
+  background: transparent;
 }
 
 .enhanced-startup__status {
@@ -327,8 +327,8 @@ const handleConnect = (cmd: UxCommandLine) => {
   max-height: min(38vh, 280px) !important;
   padding: 8px;
   border: 1px solid rgba(110, 124, 148, 0.16);
-  border-radius: 14px;
-  background: rgba(127, 143, 166, 0.055);
+  border-radius: 10px;
+  background: rgba(127, 143, 166, 0.04);
 }
 
 .enhanced-startup__launchers :deep(.group) {
@@ -337,17 +337,17 @@ const handleConnect = (cmd: UxCommandLine) => {
 }
 
 [data-theme='dark'] .enhanced-startup__launchers {
-  border-color: rgba(201, 169, 106, 0.16);
-  background: rgba(11, 20, 36, 0.56);
+  border-color: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .startup-logo {
   color: #b08d51;
-  filter: drop-shadow(0 4px 22px rgba(201, 169, 106, 0.17));
+  filter: none;
 
   [data-theme='dark'] & {
     color: #d6b776;
-    filter: drop-shadow(0 4px 24px rgba(201, 169, 106, 0.27));
+    filter: none;
   }
 }
 </style>
