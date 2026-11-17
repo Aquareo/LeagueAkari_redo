@@ -236,7 +236,7 @@ watch(
   flex-direction: column;
   height: 100%;
   width: var(--la-sidebar-width-expanded);
-  transition: width 0.3s cubic-bezier(0, 0.9, 0.1, 1);
+  transition: width 0.26s cubic-bezier(0.2, 0.75, 0.2, 1);
   position: relative;
 
   &.collapsed {
@@ -252,9 +252,11 @@ watch(
     display: flex;
     align-items: center;
     padding-inline: var(--la-sidebar-icon-horizontal-padding);
-    padding-block: 12px 8px;
-    gap: 4px;
+    padding-block: 15px 16px;
+    gap: 8px;
     overflow: hidden;
+    border-bottom: 1px solid rgba(110, 124, 148, 0.14);
+    margin-bottom: 12px;
   }
 
   .app-sidebar__logo {
@@ -270,8 +272,8 @@ watch(
   }
 
   .app-sidebar__logo-icon {
-    color: rgba(248, 63, 111);
-    filter: drop-shadow(0 0 8px rgba(248, 63, 111, 0.3));
+    color: #c9a96a;
+    filter: drop-shadow(0 0 10px rgba(201, 169, 106, 0.25));
     transition:
       filter 0.2s,
       opacity 0.2s;
@@ -279,7 +281,8 @@ watch(
 
   .app-sidebar__logo-text {
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 750;
+    letter-spacing: 0.025em;
     font-family: 'Comfortaa', sans-serif;
     text-wrap-mode: nowrap;
     transition: opacity 0.2s;
@@ -316,7 +319,9 @@ watch(
   }
 
   .app-sidebar__fixed {
-    margin-bottom: var(--la-sidebar-icon-horizontal-padding);
+    margin-bottom: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(110, 124, 148, 0.14);
   }
 
   .app-sidebar__expand-line {
@@ -329,11 +334,12 @@ watch(
     cursor: ew-resize;
 
     &:hover .app-sidebar__expand-line-inner {
-      background-color: #f83f6f;
+      background-color: #c9a96a;
     }
 
     .app-sidebar__expand-line-inner {
       width: 2px;
+      border-radius: 2px;
       height: 100%;
       background-color: transparent;
       transition: background-color 0.4s;
