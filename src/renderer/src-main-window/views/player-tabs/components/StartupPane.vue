@@ -22,10 +22,21 @@
     <!-- version -->
     <div class="text-xs text-black/40 dark:text-white/40">v{{ as.version }}</div>
 
-    <!-- spacer -->
-    <div class="h-12"></div>
+    <div class="enhanced-startup__status" :class="{ 'is-connected': lcs.isConnected }" role="status">
+      <span class="enhanced-startup__status-dot" aria-hidden="true" />
+      {{
+        lcs.isConnected
+          ? lcs.summoner.me?.gameName || t('summoner', { ns: 'common' })
+          : lcs.isInConnectionLoop
+            ? t('navigation.sidebar.status.inConnectionLoop')
+            : t('navigation.sidebar.status.notConnected')
+      }}
+    </div>
 
-    <NScrollbar class="enhanced-startup__launchers h-fit! max-h-58 w-58!">
+    <!-- spacer -->
+    <div class="h-8"></div>
+
+    <NScrollbar v-if="lcs.summoner.me || otherClients.length || launchItems.length" class="enhanced-startup__launchers h-fit! max-h-58 w-58!">
       <!-- summoner -->
       <div
         v-if="lcs.summoner.me"
@@ -278,6 +289,32 @@ const handleConnect = (cmd: UxCommandLine) => {
   box-sizing: border-box;
   overflow: auto;
   background: radial-gradient(ellipse at 50% 28%, rgba(201, 169, 106, 0.085), transparent 48%);
+}
+
+.enhanced-startup__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid var(--akari-enhanced-stroke);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--la-color-text-primary);
+  background: rgba(127, 143, 166, 0.07);
+}
+
+.enhanced-startup__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a0a9b9;
+  box-shadow: 0 0 0 3px rgba(160, 169, 185, 0.12);
+}
+
+.enhanced-startup__status.is-connected .enhanced-startup__status-dot {
+  background: #61c6a5;
+  box-shadow: 0 0 0 3px rgba(97, 198, 165, 0.15);
 }
 
 .enhanced-startup__title {
