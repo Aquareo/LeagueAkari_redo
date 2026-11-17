@@ -3,7 +3,7 @@
     <NScrollbar x-scrollable :theme-overrides="{ width: '8px' }" ref="scrollbarEl">
       <div ref="layoutContainerEl" class="@container w-full">
         <div class="mx-auto w-full max-w-191 pt-8 pb-8 @[1280px]:max-w-312">
-          <PlayerTabHeader class="mb-7 h-28 px-4" />
+          <PlayerTabHeader class="mb-7 min-h-28 px-4" />
 
           <div class="box-border px-4 @[764px]:px-0">
             <div ref="stickySentinelEl" class="h-0 w-full"></div>
