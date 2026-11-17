@@ -8,14 +8,14 @@
       <NTabs
         class="enhanced-tabbed-page__tabs"
         :value="currentTab"
-        :theme-overrides="{ tabGapMediumBar: '18px' }"
+        :theme-overrides="{ tabGapMediumBar: '16px' }"
         size="medium"
         @update:value="handleUserTabChange"
       >
         <NTab v-for="tab in tabs" :key="tab.key" :name="tab.key" :tab="tab.name">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1.5">
             <NIcon class="text-base" :component="tab.icon" />
-            <span class="font-bold">{{ tab.name }}</span>
+            <span class="font-medium">{{ tab.name }}</span>
           </div>
         </NTab>
       </NTabs>
@@ -184,19 +184,19 @@ watch(
 
 <style scoped>
 .enhanced-tabbed-page__header {
-  min-height: 58px;
-  gap: 8px;
-  background: linear-gradient(180deg, rgba(240, 243, 249, 0.3), rgba(240, 243, 249, 0.08));
+  min-height: 54px;
+  gap: 4px;
+  background: transparent;
 }
 
 [data-theme='dark'] .enhanced-tabbed-page__header {
-  background: linear-gradient(180deg, rgba(19, 31, 49, 0.75), rgba(12, 21, 36, 0.15));
-  border-bottom-color: rgba(201, 169, 106, 0.12);
+  background: rgba(16, 24, 37, 0.38);
+  border-bottom-color: rgba(255, 255, 255, 0.07);
 }
 
 .enhanced-tabbed-page__heading {
-  padding-bottom: 12px;
-  gap: 10px;
+  padding-bottom: 11px;
+  gap: 8px;
   letter-spacing: 0.01em;
 }
 
