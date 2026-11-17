@@ -1,7 +1,7 @@
 <template>
   <div
     ref="wrapperEl"
-    class="relative w-full min-w-175"
+    class="enhanced-match-card relative w-full min-w-175"
     :aria-hidden="hidden || undefined"
     :data-match-card-render-state="renderState"
     :style="wrapperStyle"
@@ -216,6 +216,20 @@ defineExpose<MatchCardExpose>({
 </script>
 
 <style scoped>
+.enhanced-match-card[data-match-card-render-state='materialized'] {
+  border-radius: 12px;
+  transition: filter 180ms ease, box-shadow 180ms ease;
+}
+
+.enhanced-match-card[data-match-card-render-state='materialized']:hover {
+  filter: brightness(1.035);
+  box-shadow: 0 6px 24px rgba(9, 18, 32, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enhanced-match-card { transition: none; }
+}
+
 .match-history-card-materialize-enter-active {
   transition: opacity 180ms ease-out;
 }

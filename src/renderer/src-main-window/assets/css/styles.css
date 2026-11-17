@@ -118,3 +118,46 @@ a:visited {
   opacity: 1;
   transform: scale(1);
 }
+
+/* Enhanced Edition — shared surface language, with original theme tokens intact. */
+:root {
+  --akari-enhanced-accent: #b59258;
+  --akari-enhanced-accent-bright: #d6b776;
+  --akari-enhanced-stroke: rgba(92, 106, 129, 0.18);
+  --akari-enhanced-radius: 12px;
+}
+
+[data-theme='dark'] {
+  --akari-enhanced-stroke: rgba(181, 196, 218, 0.12);
+}
+
+::selection {
+  background: rgba(201, 169, 106, 0.28);
+}
+
+.n-card {
+  border-radius: var(--akari-enhanced-radius);
+}
+
+.n-button {
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.n-input,
+.n-input-wrapper,
+.n-base-selection {
+  border-radius: 8px;
+}
+
+:focus-visible {
+  outline-color: var(--akari-enhanced-accent-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

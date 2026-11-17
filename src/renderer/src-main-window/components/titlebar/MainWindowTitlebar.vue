@@ -101,12 +101,19 @@ const shouldShowBottomBorder = computed(() => {
   align-items: center;
   -webkit-app-region: drag;
   z-index: 1000000;
+  background: rgba(246, 248, 252, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  [data-theme='dark'] & {
+    background: rgba(11, 20, 36, 0.76);
+  }
 
   &.should-show-bottom-border {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
     [data-theme='dark'] & {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(201, 169, 106, 0.16);
     }
   }
 }

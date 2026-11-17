@@ -1,11 +1,12 @@
 <template>
-  <div class="flex h-full flex-col">
-    <div class="flex items-end border-b border-black/10 px-6 dark:border-white/10">
-      <div class="mr-6 mb-1 flex shrink-0 items-center gap-2 text-black/80 dark:text-white/80">
+  <div class="enhanced-tabbed-page flex h-full flex-col">
+    <div class="enhanced-tabbed-page__header flex items-end border-b border-black/10 px-6 dark:border-white/10">
+      <div class="enhanced-tabbed-page__heading mr-6 mb-1 flex shrink-0 items-center gap-2 text-black/80 dark:text-white/80">
         <NIcon class="text-2xl" :component="icon" />
         <span class="text-base font-bold">{{ title }}</span>
       </div>
       <NTabs
+        class="enhanced-tabbed-page__tabs"
         :value="currentTab"
         :theme-overrides="{ tabGapMediumBar: '18px' }"
         size="medium"
@@ -182,6 +183,36 @@ watch(
 </script>
 
 <style scoped>
+.enhanced-tabbed-page__header {
+  min-height: 58px;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(240, 243, 249, 0.3), rgba(240, 243, 249, 0.08));
+}
+
+[data-theme='dark'] .enhanced-tabbed-page__header {
+  background: linear-gradient(180deg, rgba(19, 31, 49, 0.75), rgba(12, 21, 36, 0.15));
+  border-bottom-color: rgba(201, 169, 106, 0.12);
+}
+
+.enhanced-tabbed-page__heading {
+  padding-bottom: 12px;
+  gap: 10px;
+  letter-spacing: 0.01em;
+}
+
+.enhanced-tabbed-page__tabs {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .move-from-left-fade-enter-active,
+  .move-from-left-fade-leave-active,
+  .move-from-right-fade-enter-active,
+  .move-from-right-fade-leave-active {
+    transition-duration: 0.01ms;
+  }
+}
+
 .move-from-left-fade-enter-active {
   position: relative;
   transition:

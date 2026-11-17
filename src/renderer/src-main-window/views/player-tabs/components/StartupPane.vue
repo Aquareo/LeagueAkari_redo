@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center">
+  <div class="enhanced-startup flex flex-col items-center justify-center">
     <!-- logo placeholder -->
     <NIcon class="startup-logo relative -left-2 mb-4 text-[96px]">
       <AkariLogo />
@@ -7,7 +7,7 @@
 
     <!-- app name -->
     <div
-      class="relative mb-1 font-['Comfortaa',sans-serif] text-2xl text-gray-800 dark:text-gray-100"
+      class="enhanced-startup__title relative mb-1 font-['Comfortaa',sans-serif] text-2xl text-gray-800 dark:text-gray-100"
     >
       {{ t('appName', { ns: 'common' }) }}
 
@@ -22,10 +22,21 @@
     <!-- version -->
     <div class="text-xs text-black/40 dark:text-white/40">v{{ as.version }}</div>
 
-    <!-- spacer -->
-    <div class="h-12"></div>
+    <div class="enhanced-startup__status" :class="{ 'is-connected': lcs.isConnected }" role="status">
+      <span class="enhanced-startup__status-dot" aria-hidden="true" />
+      {{
+        lcs.isConnected
+          ? lcs.summoner.me?.gameName || t('summoner', { ns: 'common' })
+          : lcs.isInConnectionLoop
+            ? t('navigation.sidebar.status.inConnectionLoop')
+            : t('navigation.sidebar.status.notConnected')
+      }}
+    </div>
 
-    <NScrollbar class="h-fit! max-h-58 w-58!">
+    <!-- spacer -->
+    <div class="h-8"></div>
+
+    <NScrollbar v-if="lcs.summoner.me || otherClients.length || launchItems.length" class="enhanced-startup__launchers h-fit! max-h-58 w-58!">
       <!-- summoner -->
       <div
         v-if="lcs.summoner.me"
@@ -271,13 +282,72 @@ const handleConnect = (cmd: UxCommandLine) => {
 </script>
 
 <style scoped>
+.enhanced-startup {
+  min-height: 100%;
+  position: relative;
+  padding: 44px 24px;
+  box-sizing: border-box;
+  overflow: auto;
+  background: radial-gradient(ellipse at 50% 28%, rgba(201, 169, 106, 0.085), transparent 48%);
+}
+
+.enhanced-startup__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid var(--akari-enhanced-stroke);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--la-color-text-primary);
+  background: rgba(127, 143, 166, 0.07);
+}
+
+.enhanced-startup__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a0a9b9;
+  box-shadow: 0 0 0 3px rgba(160, 169, 185, 0.12);
+}
+
+.enhanced-startup__status.is-connected .enhanced-startup__status-dot {
+  background: #61c6a5;
+  box-shadow: 0 0 0 3px rgba(97, 198, 165, 0.15);
+}
+
+.enhanced-startup__title {
+  font-weight: 750;
+  letter-spacing: 0.03em;
+}
+
+.enhanced-startup__launchers {
+  width: min(100%, 350px) !important;
+  max-height: min(38vh, 280px) !important;
+  padding: 8px;
+  border: 1px solid rgba(110, 124, 148, 0.16);
+  border-radius: 14px;
+  background: rgba(127, 143, 166, 0.055);
+}
+
+.enhanced-startup__launchers :deep(.group) {
+  border-radius: 9px;
+  min-height: 44px;
+}
+
+[data-theme='dark'] .enhanced-startup__launchers {
+  border-color: rgba(201, 169, 106, 0.16);
+  background: rgba(11, 20, 36, 0.56);
+}
+
 .startup-logo {
-  color: rgba(220, 50, 100, 1);
-  filter: drop-shadow(0 4px 12px rgba(220, 50, 100, 0.12));
+  color: #b08d51;
+  filter: drop-shadow(0 4px 22px rgba(201, 169, 106, 0.17));
 
   [data-theme='dark'] & {
-    color: rgba(248, 63, 111, 1);
-    filter: drop-shadow(0 4px 12px rgba(248, 63, 111, 0.15));
+    color: #d6b776;
+    filter: drop-shadow(0 4px 24px rgba(201, 169, 106, 0.27));
   }
 }
 </style>

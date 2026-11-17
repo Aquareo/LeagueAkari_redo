@@ -33,7 +33,7 @@
         </NButton>
       </div>
 
-      <div v-if="page.games.length > 0" class="flex flex-col gap-1">
+      <div v-if="page.games.length > 0" class="enhanced-match-history flex flex-col gap-2.5">
         <MatchHistoryCard
           v-for="g of page.games"
           ref="matchCardEls"
@@ -220,3 +220,14 @@ onUnmounted(() => {
   events.off('focusGame', handleFocusGame)
 })
 </script>
+
+<style scoped>
+.enhanced-match-history :deep(> *) {
+  border-radius: 11px;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.enhanced-match-history :deep(> *:hover) {
+  box-shadow: 0 5px 18px rgba(11, 21, 34, 0.08);
+}
+</style>

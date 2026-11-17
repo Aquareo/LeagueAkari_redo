@@ -53,6 +53,9 @@ defineExpose({
     padding-right: var(--settings-row-x-padding);
 
     @apply mb-2;
+    border-left: 2px solid var(--akari-enhanced-accent, #b59258);
+    margin-left: 1px;
+    transition: border-color 180ms ease;
   }
 
   .settings-section-title {
@@ -64,6 +67,8 @@ defineExpose({
     isolation: isolate;
 
     @apply w-full max-w-full overflow-hidden rounded-lg;
+    border: 1px solid rgba(92, 106, 129, 0.13);
+    transition: border-color 180ms ease, box-shadow 180ms ease;
   }
 
   .settings-section--highlighted .settings-section-body {
@@ -82,6 +87,16 @@ defineExpose({
 
   .settings-section:not(.settings-section--no-bg) .settings-section-body {
     @apply bg-black/5 dark:bg-white/8;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 62%);
+  }
+
+  [data-theme='dark'] .settings-section-body {
+    border-color: rgba(201, 169, 106, 0.13);
+  }
+
+  .settings-section:not(.settings-section--no-bg):hover .settings-section-body {
+    border-color: rgba(181, 146, 88, 0.29);
+    box-shadow: 0 5px 22px rgba(10, 20, 32, 0.055);
   }
 
   .settings-section-footer {
