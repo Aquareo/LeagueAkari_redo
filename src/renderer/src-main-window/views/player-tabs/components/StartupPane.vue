@@ -6,8 +6,8 @@
           <span class="workspace-heading__icon"><NIcon><AkariLogo /></NIcon></span>
           <div class="workspace-heading__copy">
             <div class="workspace-eyebrow">LEAGUE AKARI <span class="workspace-version">v{{ as.version }}</span></div>
-            <h1>Workspace</h1>
-            <p>Everything you need, without the clutter.</p>
+            <h1>{{ t('workspace.title') }}</h1>
+            <p>{{ t('workspace.subtitle') }}</p>
           </div>
         </div>
         <NButton v-if="showNewVersionBadge" size="small" secondary @click="handleShowUpdateModal">
@@ -21,12 +21,12 @@
             <span class="workspace-status-icon__dot" />
           </span>
           <div class="workspace-connection__text">
-            <span class="workspace-overline">CLIENT STATUS</span>
-            <strong v-if="lcs.isConnected">League Client</strong>
+            <span class="workspace-overline">{{ t('workspace.clientStatus') }}</span>
+            <strong v-if="lcs.isConnected">{{ t('workspace.clientName') }}</strong>
             <strong v-else-if="lcs.isInConnectionLoop">{{ t('navigation.sidebar.status.inConnectionLoop') }}</strong>
             <strong v-else>{{ t('navigation.sidebar.status.notConnected') }}</strong>
             <span class="workspace-connection__caption">
-              {{ lcs.isConnected ? 'Connected and ready' : 'Launch League of Legends to connect' }}
+              {{ lcs.isConnected ? t('workspace.connected') : t('workspace.disconnectedHint') }}
             </span>
           </div>
         </div>
@@ -37,28 +37,28 @@
       </section>
 
       <div class="workspace-section-heading">
-        <div><span class="workspace-overline">SHORTCUTS</span><h2>Quick access</h2></div>
+        <div><span class="workspace-overline">{{ t('workspace.shortcuts') }}</span><h2>{{ t('workspace.quickAccess') }}</h2></div>
       </div>
       <div class="workspace-actions">
         <button type="button" class="workspace-action" @click="openSearch('summoner')">
           <span class="workspace-action__symbol"><NIcon><Search20Regular /></NIcon></span>
-          <span class="workspace-action__copy"><strong>Find a player</strong><small>Search summoners and profiles</small></span>
+          <span class="workspace-action__copy"><strong>{{ t('workspace.findPlayer') }}</strong><small>{{ t('workspace.findPlayerHint') }}</small></span>
           <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
         </button>
         <button type="button" class="workspace-action" @click="navigate('automation')">
           <span class="workspace-action__symbol"><NIcon><Flash20Filled /></NIcon></span>
-          <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.automation') }}</strong><small>Matchmaking and champion select</small></span>
+          <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.automation') }}</strong><small>{{ t('workspace.automationHint') }}</small></span>
           <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
         </button>
         <button type="button" class="workspace-action" @click="navigate('toolkit')">
           <span class="workspace-action__symbol"><NIcon><ToolFilled /></NIcon></span>
-          <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.toolkit') }}</strong><small>Client utilities and tools</small></span>
+          <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.toolkit') }}</strong><small>{{ t('workspace.toolkitHint') }}</small></span>
           <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
         </button>
       </div>
 
       <div class="workspace-section-heading workspace-section-heading--secondary">
-        <div><span class="workspace-overline">CONNECTED ACCOUNTS & APPS</span><h2>Continue where you left off</h2></div>
+        <div><span class="workspace-overline">{{ t('workspace.resources') }}</span><h2>{{ t('workspace.continue') }}</h2></div>
       </div>
       <section class="workspace-panel workspace-resources">
         <button v-if="lcs.summoner.me" type="button" class="workspace-resource" @click="handleOpenSelfTab">
@@ -77,7 +77,7 @@
             <LcuImage class="workspace-resource__image workspace-resource__image--avatar" :src="lcps.connectableClientExtraInfo[client.pid]?.profileIcon" />
             <span class="workspace-resource__copy">
               <strong>{{ otherClientName(client, index) }} <span class="workspace-muted">{{ otherClientTagLine(client) }}</span></strong>
-              <small>League Client · PID {{ client.pid }}</small>
+              <small>{{ t('workspace.clientName') }} · PID {{ client.pid }}</small>
             </span>
             <NSpin v-if="lcs.connectingClient?.pid === client.pid" :size="14" />
             <NIcon v-else class="workspace-resource__arrow"><PlugConnected24Filled /></NIcon>
@@ -89,7 +89,7 @@
           <NIcon class="workspace-resource__arrow"><ChevronRight20Filled /></NIcon>
         </button>
         <div v-if="!lcs.summoner.me && !otherClients.length && !launchItems.length" class="workspace-empty">
-          No clients or launchers found yet. Open the game client, or use the tools above.
+          {{ t('workspace.empty') }}
         </div>
       </section>
       <footer class="workspace-footer">AKARI ENHANCED <span>·</span> v{{ as.version }}</footer>
