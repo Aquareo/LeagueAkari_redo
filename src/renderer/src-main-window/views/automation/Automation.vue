@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { SettingFilled } from '@vicons/antd'
-import { AiStatus, Cursor1, UserProfile } from '@vicons/carbon'
+import { AiStatus, Cursor1, UserProfile, ChartRelationship } from '@vicons/carbon'
 import { TextBulletListTree20Filled } from '@vicons/fluent'
 import { useTranslation } from 'i18next-vue'
 import { computed } from 'vue'
@@ -21,10 +21,17 @@ import AutoChampConfig from './AutoChampConfig.vue'
 import AutoGameflow from './AutoGameflow.vue'
 import AutoMisc from './AutoMisc.vue'
 import AutoSelect from './AutoSelect.vue'
+import TopLaneCounter from './TopLaneCounter.vue'
 
 const { t } = useTranslation()
 
 const tabs = computed<TabConfig[]>(() => [
+  {
+    key: 'top-counter',
+    name: t('automation.home.topCounter'),
+    icon: ChartRelationship,
+    component: TopLaneCounter
+  },
   {
     key: 'auto-gameflow',
     name: t('automation.home.autoGameflow'),
