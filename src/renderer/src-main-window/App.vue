@@ -182,18 +182,18 @@ app.onApplicationMenuSettingsClick(() => {
   min-width: var(--la-app-min-width);
   min-height: var(--la-app-min-height);
   isolation: isolate;
-  --enhanced-gold: #c9a96a;
-  --enhanced-gold-soft: rgba(201, 169, 106, 0.12);
+  --enhanced-gold: #78a992;
+  --enhanced-gold-soft: rgba(120, 169, 146, 0.12);
 
   .app-frame__left {
-    background-color: rgba(249, 250, 252, 0.96);
+    background-color: rgba(248, 252, 250, 0.97);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-right: 1px solid rgba(34, 45, 68, 0.09);
     z-index: 10;
 
     [data-theme='dark'] & {
-      background: #111a28;
+      background: #18242a;
       border-right-color: rgba(255, 255, 255, 0.07);
     }
 
