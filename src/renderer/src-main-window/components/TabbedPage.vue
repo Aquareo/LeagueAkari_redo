@@ -1,8 +1,8 @@
 <template>
   <div class="enhanced-tabbed-page flex h-full flex-col">
     <div class="enhanced-tabbed-page__header flex items-end border-b border-black/10 px-6 dark:border-white/10">
-      <div class="enhanced-tabbed-page__heading mr-6 mb-1 flex shrink-0 items-center gap-2 text-black/80 dark:text-white/80">
-        <NIcon class="text-2xl" :component="icon" />
+      <div class="enhanced-tabbed-page__heading mr-5 mb-1 flex shrink-0 items-center gap-2 text-black/80 dark:text-white/80">
+        <NIcon class="text-xl" :component="icon" />
         <span class="text-base font-bold">{{ title }}</span>
       </div>
       <NTabs
@@ -185,7 +185,7 @@ watch(
 <style scoped>
 .enhanced-tabbed-page__header {
   min-height: 54px;
-  gap: 4px;
+  gap: 8px;
   background: transparent;
 }
 

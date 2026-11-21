@@ -21,10 +21,17 @@ import AutoChampConfig from './AutoChampConfig.vue'
 import AutoGameflow from './AutoGameflow.vue'
 import AutoMisc from './AutoMisc.vue'
 import AutoSelect from './AutoSelect.vue'
+import TopLaneCounter from './TopLaneCounter.vue'
 
 const { t } = useTranslation()
 
 const tabs = computed<TabConfig[]>(() => [
+  {
+    key: 'top-counter',
+    name: t('automation.home.topCounter'),
+    icon: UserProfile,
+    component: TopLaneCounter
+  },
   {
     key: 'auto-gameflow',
     name: t('automation.home.autoGameflow'),

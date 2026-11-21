@@ -218,3 +218,22 @@ startup:
 backgroundTasks:
   taskTitle: Ongoing Tasks ({{count}})
   emptyPlaceholder: No background tasks
+
+workspace:
+  title: Workspace
+  subtitle: Everything you need, without the clutter.
+  clientStatus: Client status
+  connected: Connected and ready
+  disconnectedHint: Launch League of Legends to connect
+  shortcuts: Shortcuts
+  quickAccess: Quick access
+  findPlayer: Find a player
+  findPlayerHint: Search players and profiles
+  automationHint: Matchmaking and champion select
+  toolkitHint: Client utilities and tools
+  resources: Accounts and apps
+  continue: Continue where you left off
+  clientName: League Client
+  empty: No clients or launchers found yet. Open the game client, or use the tools above.
+  sidebarGroup: Workspace
+  search: Search

@@ -222,8 +222,8 @@ defineExpose<MatchCardExpose>({
 }
 
 .enhanced-match-card[data-match-card-render-state='materialized']:hover {
-  filter: brightness(1.035);
-  box-shadow: 0 6px 24px rgba(9, 18, 32, 0.1);
+  filter: none;
+  box-shadow: 0 3px 12px rgba(9, 18, 32, 0.07);
 }
 
 @media (prefers-reduced-motion: reduce) {
