@@ -59,7 +59,7 @@ defineExpose({
   }
 
   .settings-section-title {
-    @apply text-sm leading-5 font-bold text-black/80 dark:text-white/90;
+    @apply text-sm leading-5 font-semibold text-black/80 dark:text-white/90;
   }
 
   .settings-section-body {
