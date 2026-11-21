@@ -1,5 +1,6 @@
 automation:
   home:
+    topCounter: 上路克制推荐
     title: 自动化
     autoGameflow: 自动游戏流程
     autoSelect: 自动选择 / 禁用
