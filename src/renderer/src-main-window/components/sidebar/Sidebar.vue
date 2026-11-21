@@ -7,9 +7,9 @@
     }"
     :style="{
       '--la-sidebar-width-collapsed': as.isMacOS ? '68px' : '52px',
-      '--la-sidebar-width-expanded': as.isMacOS ? '192px' : '176px',
+      '--la-sidebar-width-expanded': as.isMacOS ? '200px' : '196px',
       '--la-sidebar-icon-height': as.isMacOS ? '40px' : '36px',
-      '--la-sidebar-icon-horizontal-padding': as.isMacOS ? '8px' : '4px'
+      '--la-sidebar-icon-horizontal-padding': as.isMacOS ? '10px' : '10px'
     }"
   >
     <!-- macOS 的 logo 区留给交通等 -->
@@ -252,11 +252,11 @@ watch(
     display: flex;
     align-items: center;
     padding-inline: var(--la-sidebar-icon-horizontal-padding);
-    padding-block: 15px 16px;
-    gap: 8px;
+    padding-block: 18px 16px;
+    gap: 10px;
     overflow: hidden;
     border-bottom: 1px solid rgba(110, 124, 148, 0.14);
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .app-sidebar__logo {
@@ -272,8 +272,8 @@ watch(
   }
 
   .app-sidebar__logo-icon {
-    color: #c9a96a;
-    filter: drop-shadow(0 0 10px rgba(201, 169, 106, 0.25));
+    color: #bfaa81;
+    filter: none;
     transition:
       filter 0.2s,
       opacity 0.2s;
@@ -281,7 +281,7 @@ watch(
 
   .app-sidebar__logo-text {
     font-size: 14px;
-    font-weight: 750;
+    font-weight: 650;
     letter-spacing: 0.025em;
     font-family: 'Comfortaa', sans-serif;
     text-wrap-mode: nowrap;

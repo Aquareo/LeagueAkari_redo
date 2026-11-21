@@ -186,15 +186,15 @@ app.onApplicationMenuSettingsClick(() => {
   --enhanced-gold-soft: rgba(201, 169, 106, 0.12);
 
   .app-frame__left {
-    background-color: rgba(243, 245, 250, 0.83);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background-color: rgba(249, 250, 252, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-right: 1px solid rgba(34, 45, 68, 0.09);
     z-index: 10;
 
     [data-theme='dark'] & {
-      background: linear-gradient(165deg, rgba(16, 27, 46, 0.96), rgba(9, 16, 30, 0.98));
-      border-right-color: rgba(201, 169, 106, 0.18);
+      background: #111a28;
+      border-right-color: rgba(255, 255, 255, 0.07);
     }
 
     [data-theme-id]:not([data-theme-id='light']):not([data-theme-id='dark']) & {
@@ -225,7 +225,7 @@ app.onApplicationMenuSettingsClick(() => {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse at 85% 0%, rgba(49, 99, 130, 0.08), transparent 54%);
+    background: none;
     z-index: -1;
   }
 
