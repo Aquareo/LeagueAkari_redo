@@ -1,5 +1,6 @@
 automation:
   home:
+    topCounter: Top lane counters
     title: Automation
     autoGameflow: Automated Gameflow
     autoSelect: Auto Pick / Ban
