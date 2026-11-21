@@ -282,7 +282,7 @@ watch(
   }
 
   .app-sidebar__logo-icon {
-    color: #bfaa81;
+    color: #73b79a;
     filter: none;
     transition:
       filter 0.2s,
@@ -380,7 +380,7 @@ watch(
     cursor: ew-resize;
 
     &:hover .app-sidebar__expand-line-inner {
-      background-color: #c9a96a;
+      background-color: #70ab91;
     }
 
     .app-sidebar__expand-line-inner {
