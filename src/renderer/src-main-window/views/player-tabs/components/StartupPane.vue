@@ -50,6 +50,11 @@
           <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.automation') }}</strong><small>{{ t('workspace.automationHint') }}</small></span>
           <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
         </button>
+        <button type="button" class="workspace-action" @click="navigateTopCounter">
+          <span class="workspace-action__symbol"><NIcon><Flash20Filled /></NIcon></span>
+          <span class="workspace-action__copy"><strong>{{ isZh ? '上路对位建议' : 'Top lane matchups' }}</strong><small>{{ isZh ? '根据已公开的敌方选人辅助决策' : 'Pick ideas from revealed enemies' }}</small></span>
+          <NIcon class="workspace-action__arrow"><ChevronRight20Filled /></NIcon>
+        </button>
         <button type="button" class="workspace-action" @click="navigate('toolkit')">
           <span class="workspace-action__symbol"><NIcon><ToolFilled /></NIcon></span>
           <span class="workspace-action__copy"><strong>{{ t('navigation.sidebar.menu.toolkit') }}</strong><small>{{ t('workspace.toolkitHint') }}</small></span>
@@ -147,6 +152,8 @@ const message = useMessage()
 const router = useRouter()
 const { openSearch } = useMainWindowAppContext()
 const navigate = (routeName: 'automation' | 'toolkit') => void router.push({ name: routeName })
+const navigateTopCounter = () => void router.push({ name: 'automation', params: { section: 'top-counter' } })
+const isZh = computed(() => as.settings.locale !== 'en')
 const { masked, summonerName: streamerSummonerName } = useStreamerModeMaskedText()
 
 const { navigateToTabByPuuid } = pt.useNavigateToTab()
@@ -275,7 +282,7 @@ const handleConnect = (cmd: UxCommandLine) => {
 .workspace-section-heading { margin: 32px 0 14px; }
 .workspace-section-heading--secondary { margin-top: 30px; }
 .workspace-section-heading h2 { font-size: 16px; font-weight: 700; margin: 5px 0 0; letter-spacing: -.015em; }
-.workspace-actions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.workspace-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
 .workspace-action { min-width: 0; display: flex; align-items: flex-start; text-align: left; gap: 12px; padding: 17px 14px; background: var(--workspace-surface); border: 1px solid var(--workspace-border); border-radius: 10px; color: inherit; cursor: pointer; transition: border-color 150ms ease, background 150ms ease; font: inherit; }
 .workspace-action:hover,.workspace-resource:hover { background: var(--workspace-hover); border-color: var(--workspace-border-hover); }
 .workspace-action:focus-visible,.workspace-resource:focus-visible { outline: 2px solid #579ae7; outline-offset: 2px; }
