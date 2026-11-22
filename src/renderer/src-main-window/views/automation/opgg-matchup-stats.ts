@@ -22,41 +22,8 @@ export interface TopMatchupStats {
   rows: HeadToHeadStats[]
 }
 
-const ENDPOINT = 'https://mcp-api.op.gg/mcp'
 const CACHE_MS = 4 * 60 * 60 * 1000
 const cache = new Map<string, TopMatchupStats>()
-let sequence = 0
-
-function parseRpcResponse(source: string): { result?: unknown; error?: { message?: string } } {
-  // Streamable HTTP may respond with JSON or Server-Sent Events (SSE).
-  const events = source.split(/\r?\n/).filter((line) => line.startsWith('data:'))
-  const payload = events.length ? events[events.length - 1].slice(5).trim() : source
-  const result: unknown = JSON.parse(payload)
-  if (!result || typeof result !== 'object') throw new Error('Invalid OP.GG response')
-  return result as { result?: unknown; error?: { message?: string } }
-}
-
-async function postRpc(
-  method: string,
-  params: Record<string, unknown>,
-  sessionId: string | null,
-  signal: AbortSignal
-): Promise<{ body: { result?: unknown; error?: { message?: string } }; sessionId: string | null }> {
-  const response = await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text/event-stream',
-      ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {})
-    },
-    body: JSON.stringify({ jsonrpc: '2.0', id: ++sequence, method, params }),
-    signal
-  })
-  if (!response.ok) throw new Error(`OP.GG HTTP ${response.status}`)
-  const body = parseRpcResponse(await response.text())
-  if (body.error) throw new Error(body.error.message || 'OP.GG rejected request')
-  return { body, sessionId: response.headers.get('mcp-session-id') ?? sessionId }
-}
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -106,38 +73,12 @@ export async function fetchTopMatchupStats(enemyAlias: string): Promise<TopMatch
   const previous = cache.get(key)
   if (previous && Date.now() - previous.fetchedAt < CACHE_MS) return previous
 
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 16000)
-  try {
-    const initialized = await postRpc('initialize', {
-      protocolVersion: '2025-03-26',
-      capabilities: {},
-      clientInfo: { name: 'league-akari-enhanced', version: '0.1.0' }
-    }, null, controller.signal)
-
-    const result = await postRpc('tools/call', {
-      name: 'lol_get_lane_matchup_guide',
-      arguments: {
-        position: 'top',
-        my_champion: alias,
-        opponent_champion: alias
-      }
-    }, initialized.sessionId, controller.signal)
-
-    const value = result.body.result
-    if (!isRecord(value)) throw new Error('Empty OP.GG tool response')
-    if (value.isError === true) throw new Error('OP.GG guide tool returned an error')
-    const content = value.content
-    if (!Array.isArray(content)) throw new Error('Missing OP.GG guide content')
-    const texts = content.filter(isRecord).map((part) => part.text).filter((x): x is string => typeof x === 'string')
-    if (!texts.length) throw new Error('Missing OP.GG text data')
-    // The matchup guide returns JSON text. Do not guess values when its schema changes.
-    const normalized = normalizeTopStats(JSON.parse(texts.join('\n')))
-    cache.set(key, normalized)
-    return normalized
-  } finally {
-    clearTimeout(timeout)
-  }
+  // The fixed-endpoint main-process bridge avoids Electron renderer CORS failures.
+  // It sends only the enemy champion alias, never a player's identity or token.
+  const response: unknown = await window.electron.ipcRenderer.invoke('akari-top-matchup-stats', alias)
+  const normalized = normalizeTopStats(response)
+  cache.set(key, normalized)
+  return normalized
 }
 
 /** Official OP.GG matchup page; does not invoke a private API or embed scraped content. */
