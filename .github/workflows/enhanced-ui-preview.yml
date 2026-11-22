@@ -2,10 +2,13 @@ name: Enhanced UI Preview
 
 on:
   pull_request:
-    branches: [dev]
+    branches: [dev, 'feat/clean-ui-v2']
   push:
     branches:
       - 'feat/akari-enhanced-ui-*'
+      - 'feat/workspace-dashboard-*'
+      - 'feat/fresh-top-counter-*'
+      - 'feat/clean-ui-*'
   workflow_dispatch:
 
 permissions:

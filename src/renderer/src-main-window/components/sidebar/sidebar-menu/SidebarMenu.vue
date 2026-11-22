@@ -119,11 +119,11 @@ watch([() => currentActiveItem.value, showItems], () => updateIndicatorTarget(),
   }
 
   .indicator-rail__shape {
-    fill: #b4a07b;
+    fill: #6baf90;
     transition: fill 0.2s;
 
     [data-theme='dark'] & {
-      fill: #c9b387;
+      fill: #7cc1a1;
     }
   }
 

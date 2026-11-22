@@ -25,6 +25,13 @@
       </div>
     </div>
 
+    <div v-if="!mui.frontendSettings.sidebarCollapsed" class="app-sidebar__section-label">{{ t('workspace.sidebarGroup') }}</div>
+    <button class="app-sidebar__search" type="button" :title="t('workspace.search')" @click="openSearch()">
+      <NIcon class="app-sidebar__search-icon"><Search20Regular /></NIcon>
+      <span class="app-sidebar__search-label">{{ t('workspace.search') }}</span>
+      <span class="app-sidebar__search-hint">⌕</span>
+    </button>
+
     <SidebarMenu
       class="app-sidebar__menu"
       :items="menu"
@@ -58,6 +65,7 @@ import { ToolFilled as ToolFilledIcon } from '@vicons/antd'
 import {
   AnimalRabbit28Filled as AnimalRabbit28FilledIcon,
   Flash20Filled as Flash20FilledIcon,
+  Search20Regular,
   Games24Filled as Games24FilledIcon
 } from '@vicons/fluent'
 import { AnalyticsRound as AnalyticsRoundIcon } from '@vicons/material'
@@ -75,6 +83,7 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 
 import { useMainWindowUiStore } from '@main-window/shards/main-window-ui/store'
+import { useMainWindowAppContext } from '@main-window/context'
 
 import SidebarFixed from './SidebarFixed.vue'
 import { SidebarMenu } from './sidebar-menu'
@@ -87,6 +96,7 @@ const mui = useMainWindowUiStore()
 const lcs = useLeagueClientStore()
 const wm = useInstance(WindowManagerRenderer)
 const sidebarEl = useTemplateRef('app-sidebar')
+const { openSearch } = useMainWindowAppContext()
 
 const MAIN_WINDOW_TRAFFIC_LIGHT_DEFAULT_POSITION = {
   x: 4,
@@ -272,7 +282,7 @@ watch(
   }
 
   .app-sidebar__logo-icon {
-    color: #bfaa81;
+    color: #73b79a;
     filter: none;
     transition:
       filter 0.2s,
@@ -314,6 +324,42 @@ watch(
     }
   }
 
+  .app-sidebar__section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    opacity: 0.46;
+    padding: 0 16px 10px;
+  }
+
+  .app-sidebar__search {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 9px;
+    height: 36px;
+    margin: 0 10px 15px;
+    padding: 0 10px;
+    border: 1px solid rgba(97, 109, 126, 0.22);
+    border-radius: 8px;
+    background: rgba(122, 138, 159, 0.055);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .app-sidebar__search:hover {
+    background: rgba(121, 143, 169, 0.12);
+    border-color: rgba(121, 143, 169, 0.35);
+  }
+  .app-sidebar__search:focus-visible { outline: 2px solid #579ae7; outline-offset: 2px; }
+  .app-sidebar__search-icon { font-size: 16px; flex: 0 0 auto; opacity: 0.7; }
+  .app-sidebar__search-label { font-size: 12px; opacity: 0.7; overflow: hidden; white-space: nowrap; }
+  .app-sidebar__search-hint { margin-left: auto; opacity: 0.42; }
+  &.collapsed .app-sidebar__search { width: 32px; height: 32px; padding: 0; justify-content: center; margin: 0 auto 12px; }
+  &.collapsed .app-sidebar__search-label,
+  &.collapsed .app-sidebar__search-hint { display: none; }
+
   .app-sidebar__padding {
     flex: 1;
   }
@@ -334,7 +380,7 @@ watch(
     cursor: ew-resize;
 
     &:hover .app-sidebar__expand-line-inner {
-      background-color: #c9a96a;
+      background-color: #70ab91;
     }
 
     .app-sidebar__expand-line-inner {

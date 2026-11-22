@@ -127,21 +127,21 @@ const handleTagSaved = async () => {
 <style scoped>
 .enhanced-player-header {
   position: relative;
-  border: 1px solid rgba(125, 136, 154, 0.15);
+  border: 1px solid rgba(125, 136, 154, 0.16);
   border-radius: 14px;
   padding: 12px 16px;
-  background: linear-gradient(112deg, rgba(181, 146, 88, 0.10), rgba(127, 143, 166, 0.045) 58%, transparent);
+  background: rgba(125, 136, 154, 0.04);
   box-sizing: border-box;
   min-height: 108px;
 }
 
 [data-theme='dark'] .enhanced-player-header {
-  border-color: rgba(201, 169, 106, 0.16);
-  background: linear-gradient(112deg, rgba(201, 169, 106, 0.12), rgba(14, 26, 44, 0.42) 64%, rgba(9, 18, 32, 0.12));
+  border-color: rgba(154, 169, 189, 0.17);
+  background: rgba(22, 29, 39, 0.7);
 }
 
 .enhanced-player-header__avatar {
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
 }
 </style>
