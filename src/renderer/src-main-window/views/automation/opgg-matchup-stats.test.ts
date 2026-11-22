@@ -15,10 +15,12 @@ describe('normalizeTopStats', () => {
     }, 1234)
     expect(data.patch).toBe('26.22')
     expect(data.fetchedAt).toBe(1234)
-    expect(data.rows).toEqual([
-      { opponentId: 122, games: 500, wins: 225, winRate: 45 },
-      { opponentId: 24, games: 200, wins: 110, winRate: 55.00000000000001 }
+    expect(data.rows.map((x) => ({ id: x.opponentId, wins: x.wins, games: x.games }))).toEqual([
+      { id: 122, games: 500, wins: 225 },
+      { id: 24, games: 200, wins: 110 }
     ])
+    expect(data.rows[0].winRate).toBeCloseTo(45)
+    expect(data.rows[1].winRate).toBeCloseTo(55)
   })
 
   it('rejects malformed counts and impossible wins instead of producing fake stats', () => {
