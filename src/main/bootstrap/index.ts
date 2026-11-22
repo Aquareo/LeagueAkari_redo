@@ -35,6 +35,7 @@ import { SgpMain } from '@main/shards/sgp'
 import { StatisticsMain } from '@main/shards/statistics'
 import { StorageMain } from '@main/shards/storage'
 import { TrayMain } from '@main/shards/tray'
+import { registerTopMatchupStatsIpc } from '@main/shards/top-matchup-stats'
 import { WindowManagerMain } from '@main/shards/window-manager'
 import { DEEP_LINK_PROTOCOL } from '@main/utils/deep-link'
 import { AkariManager } from '@shared/akari-shard'
@@ -237,6 +238,7 @@ export function bootstrap() {
 
   // 注册 akari 协议的支持, 是 HTTP 请求的代理
   AkariProtocolMain.register()
+  registerTopMatchupStatsIpc()
 
   logger.info({
     message: `League Akari ${app.getVersion()}`,

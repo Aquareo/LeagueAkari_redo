@@ -8,6 +8,7 @@ on:
       - 'feat/akari-enhanced-ui-*'
       - 'feat/workspace-dashboard-*'
       - 'feat/fresh-top-counter-*'
+      - 'feat/live-matchup-stats-*'
       - 'feat/clean-ui-*'
   workflow_dispatch:
 

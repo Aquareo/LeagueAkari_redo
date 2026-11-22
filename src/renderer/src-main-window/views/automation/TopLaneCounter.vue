@@ -52,12 +52,43 @@
           </div>
         </div>
 
+        <section class="counter-live">
+          <div class="counter-live__intro">
+            <div>
+              <div class="counter-live__eyebrow">{{ isZh ? 'DATA · OP.GG' : 'DATA · OP.GG' }}</div>
+              <strong>{{ isZh ? '当前版本对位数据' : 'Live matchup statistics' }}</strong>
+              <p>{{ isZh ? '按需查询真实排位样本；低于 200 场不参与推荐排序。' : 'Real ranked samples on demand; fewer than 200 games are excluded from rankings.' }}</p>
+            </div>
+            <div class="counter-live__actions">
+              <NButton :disabled="!selectedEnemyAlias" :loading="statsLoading" size="small" type="primary" @click="loadLiveStats">
+                {{ isZh ? '获取最新数据' : 'Fetch live stats' }}
+              </NButton>
+              <ExternalLink v-if="selectedEnemyAlias" :href="opggMatchupUrl(selectedEnemyAlias)" class="counter-link">
+                {{ isZh ? '前往 OP.GG' : 'Open OP.GG' }}
+              </ExternalLink>
+            </div>
+          </div>
+          <div v-if="liveStats" class="counter-live__meta">
+            <NTag type="success" size="small" :bordered="false">{{ isZh ? '真实样本' : 'Real samples' }}</NTag>
+            <span>{{ isZh ? '版本' : 'Patch' }}: {{ liveStats.patch || (isZh ? '来源未提供' : 'unavailable') }}</span>
+            <span>{{ isZh ? '更新时间' : 'Fetched' }}: {{ new Date(liveStats.fetchedAt).toLocaleString() }}</span>
+            <span>{{ isZh ? '统计源' : 'Source' }}: OP.GG</span>
+          </div>
+          <p v-if="statsError" class="counter-live__error" role="status">
+            {{ isZh ? '暂时无法读取第三方数据：' : 'Third-party data unavailable: ' }}{{ statsError }}
+            <span>{{ isZh ? '可使用上面的 OP.GG 链接直接查看。' : 'Use the official OP.GG link above instead.' }}</span>
+          </p>
+          <p v-else-if="!liveStats" class="counter-live__hint">
+            {{ isZh ? '不会上传你的账号信息。若服务无法跨域访问，会保留外部官网入口。' : 'No account identifiers are sent. The official site link remains available if browser access is blocked.' }}
+          </p>
+        </section>
+
         <div class="counter-results-header">
           <div>
             <h3>{{ isZh ? '对位建议' : 'Matchup ideas' }}</h3>
-            <p>{{ isZh ? '定性参考，不是实时胜率排名。' : 'Qualitative ideas, not live win-rate rankings.' }}</p>
+            <p>{{ liveStats ? (isZh ? '依据对位胜率、样本量与熟练英雄排序，供参考。' : 'Ordered using sample-aware stats and champion familiarity.') : (isZh ? '未加载数据时展示定性对线思路。' : 'Curated qualitative ideas until statistics are loaded.') }}</p>
           </div>
-          <NTag size="small" :bordered="false">{{ isZh ? '仅供选人参考' : 'Draft reference only' }}</NTag>
+          <NTag size="small" :bordered="false">{{ liveStats ? (isZh ? '有版本数据' : 'Stats loaded') : (isZh ? '选人参考' : 'Draft reference') }}</NTag>
         </div>
 
         <div v-if="!selectedEnemyId" class="counter-empty">
@@ -66,8 +97,8 @@
           <span>{{ isZh ? '我们会展示候选英雄、选择原因与需要注意的风险。' : 'See candidate picks, rationale, and tradeoffs.' }}</span>
         </div>
         <div v-else-if="!suggestions.length" class="counter-empty">
-          <strong>{{ isZh ? '暂无经过整理的对位建议' : 'No curated matchup notes yet' }}</strong>
-          <span>{{ isZh ? '不会用虚构胜率推荐英雄；后续可添加有版本、段位和样本量的数据源。' : 'No fake win rates. Patch- and rank-specific data can be integrated later.' }}</span>
+          <strong>{{ isZh ? '暂无足够的对位样本' : 'No matchups with sufficient samples' }}</strong>
+          <span>{{ isZh ? '点击“获取最新数据”查询 OP.GG；无数据时不伪造胜率。' : 'Fetch OP.GG stats; no win rates are invented when data is missing.' }}</span>
         </div>
         <div v-else class="counter-cards">
           <article v-for="(item, index) in suggestions" :key="item.champion" class="counter-card">
@@ -85,6 +116,14 @@
                   </NTag>
                 </div>
                 <p>{{ isZh ? item.reasonZh : item.reasonEn }}</p>
+                <div v-if="item.stats" class="counter-stat-line">
+                  <strong>{{ item.stats.winRate.toFixed(1) }}%</strong>
+                  <span>{{ isZh ? '对阵胜率' : 'win rate vs enemy' }}</span>
+                  <span>·</span>
+                  <span>{{ item.stats.games.toLocaleString() }} {{ isZh ? '场' : 'games' }}</span>
+                  <ExternalLink v-if="selectedEnemyAlias" :href="opggMatchupUrl(selectedEnemyAlias, item.champion)" class="counter-stat-source">OP.GG</ExternalLink>
+                </div>
+                <div v-else-if="liveStats" class="counter-stat-unknown">{{ isZh ? '样本不足或来源未覆盖，暂无可靠胜率' : 'Sample unavailable or too small for a reliable rate' }}</div>
               </div>
             </div>
             <div class="counter-caution"><span>{{ isZh ? '注意' : 'CAUTION' }}</span>{{ isZh ? item.cautionZh : item.cautionEn }}</div>
@@ -92,7 +131,7 @@
         </div>
 
         <div class="counter-disclaimer">
-          {{ isZh ? '说明：仅使用客户端已经公开的敌方英雄和本地对位笔记；不读取隐藏信息，不自动锁定英雄。建议未使用实时版本胜率数据，并不保证一定克制。' : 'Notes use only revealed client picks and local matchup knowledge. No hidden data, auto-locking or patch-specific win rates. A counter pick never guarantees victory.' }}
+          {{ isZh ? '说明：对位数据由 OP.GG 提供，可能因地区、段位、版本、样本和时间而变化。低样本不显示可信胜率。客户端仅向 OP.GG 发送英雄标识，不上传账号；不读取隐藏选人信息、不自动锁定。' : 'Matchup data is provided by OP.GG and varies by region, tier, patch and sample. Small samples are not ranked. Only a champion identifier is sent; no account details, hidden picks or auto-locking.' }}
         </div>
       </div>
     </NScrollbar>
@@ -101,12 +140,19 @@
 
 <script setup lang="ts">
 import LcuImage from '@renderer-shared/components/LcuImage.vue'
+import ExternalLink from '@renderer-shared/components/ExternalLink.vue'
 import { useAppCommonStore } from '@renderer-shared/shards/app-common/store'
 import { useLeagueClientStore } from '@renderer-shared/shards/league-client/store'
-import { NScrollbar, NSelect, NTag } from 'naive-ui'
+import { NButton, NScrollbar, NSelect, NTag } from 'naive-ui'
 import { computed, ref, watch } from 'vue'
 
 import { TOP_MATCHUP_NOTES } from './top-matchups'
+import {
+  fetchTopMatchupStats,
+  opggMatchupUrl,
+  type HeadToHeadStats,
+  type TopMatchupStats
+} from './opgg-matchup-stats'
 
 const lcs = useLeagueClientStore()
 const app = useAppCommonStore()
@@ -130,6 +176,37 @@ const revealedEnemies = computed(() =>
 
 const manualEnemyId = ref<number | null>(null)
 const selectedEnemyId = computed(() => manualEnemyId.value ?? autoEnemyId.value)
+const selectedEnemyAlias = computed(() =>
+  selectedEnemyId.value ? champions.value[selectedEnemyId.value]?.alias || null : null
+)
+
+const liveStats = ref<TopMatchupStats | null>(null)
+const statsLoading = ref(false)
+const statsError = ref('')
+let statsSequence = 0
+
+const loadLiveStats = async () => {
+  const alias = selectedEnemyAlias.value
+  if (!alias) return
+  const request = ++statsSequence
+  statsLoading.value = true
+  statsError.value = ''
+  try {
+    const result = await fetchTopMatchupStats(alias)
+    if (request === statsSequence && selectedEnemyAlias.value === alias) liveStats.value = result
+  } catch (error) {
+    if (request === statsSequence) statsError.value = error instanceof Error ? error.message : 'Network error'
+  } finally {
+    if (request === statsSequence) statsLoading.value = false
+  }
+}
+
+watch(selectedEnemyAlias, () => {
+  ++statsSequence
+  liveStats.value = null
+  statsError.value = ''
+  statsLoading.value = false
+})
 watch(() => lcs.champSelect.session?.gameId, () => { manualEnemyId.value = null })
 
 const POOL_KEY = 'akari-enhanced-top-counter-pool'
@@ -144,12 +221,23 @@ watch(myPool, (value) => {
   try { localStorage.setItem(POOL_KEY, JSON.stringify(value.slice(0, 30))) } catch { /* private mode */ }
 })
 
+const MIN_MATCHUP_GAMES = 200
+
+const wilsonLower = (wins: number, games: number) => {
+  if (!games) return 0
+  const p = wins / games
+  const z = 1.96
+  const z2 = z * z
+  return (p + z2 / (2 * games) - z * Math.sqrt((p * (1 - p) + z2 / (4 * games)) / games)) / (1 + z2 / games)
+}
+
 const suggestions = computed(() => {
   const selected = selectedEnemyId.value
   if (!selected) return []
   const enemyAlias = champions.value[selected]?.alias
   if (!enemyAlias) return []
   const notes = TOP_MATCHUP_NOTES[enemyAlias] ?? []
+  const noteMap = new Map(notes.map((item) => [item.champion.toLowerCase(), item]))
   const availableIds = lcs.champSelect.currentPickableChampionIds
   const hasRestriction = Boolean(lcs.champSelect.session && availableIds.size > 0)
   const knownPicks = new Set([
@@ -158,19 +246,46 @@ const suggestions = computed(() => {
     ...(lcs.champSelect.session?.bans?.myTeamBans ?? []),
     ...(lcs.champSelect.session?.bans?.theirTeamBans ?? [])
   ])
-  return notes.map((item) => {
-    const found = Object.values(champions.value).find((c) => c.alias.toLowerCase() === item.champion.toLowerCase())
+
+  const statsMap = new Map<number, HeadToHeadStats>(
+    (liveStats.value?.rows ?? []).filter((row) => row.games >= MIN_MATCHUP_GAMES)
+      .map((row) => [row.opponentId, row])
+  )
+  // With live stats, show a broad data-backed short list beyond the curated notes.
+  // Without stats, preserve the original hand-curated suggestions.
+  const recommendedIds = liveStats.value
+    ? [...statsMap.values()].filter((row) => row.opponentId !== selected && champions.value[row.opponentId])
+        .sort((a, b) => wilsonLower(b.wins, b.games) - wilsonLower(a.wins, a.games))
+        .slice(0, 12).map((row) => row.opponentId)
+    : []
+
+  const candidateNames = new Set<string>([
+    ...notes.map((item) => item.champion.toLowerCase()),
+    ...recommendedIds.map((id) => champions.value[id]?.alias.toLowerCase() ?? '')
+  ])
+
+  return [...candidateNames].filter(Boolean).map((alias) => {
+    const found = Object.values(champions.value).find((c) => c.alias.toLowerCase() === alias)
     const id = found?.id ?? null
+    const note = noteMap.get(alias)
+    const stats = id ? statsMap.get(id) ?? null : null
     return {
-      ...item, id,
+      champion: found?.alias ?? note?.champion ?? alias,
+      reasonZh: note?.reasonZh || '当前版本样本数据提示值得关注；请结合自身熟练度与阵容决定。',
+      reasonEn: note?.reasonEn || 'Observed matchup data suggests an option to consider; factor in champion mastery and composition.',
+      cautionZh: note?.cautionZh || '统计相关性不等于保证克制，注意对线操作与阵容适配。',
+      cautionEn: note?.cautionEn || 'Statistics are not a guarantee: consider execution and team composition.',
+      id, stats,
       inMyPool: id !== null && myPool.value.includes(id),
       unavailable: id !== null && Boolean(lcs.champSelect.session) &&
         (knownPicks.has(id) || (hasRestriction && !availableIds.has(id)))
     }
   }).sort((a, b) =>
     Number(a.unavailable) - Number(b.unavailable) ||
-    Number(b.inMyPool) - Number(a.inMyPool)
-  )
+    Number(b.inMyPool) - Number(a.inMyPool) ||
+    (liveStats.value ? wilsonLower(b.stats?.wins ?? 0, b.stats?.games ?? 0) -
+      wilsonLower(a.stats?.wins ?? 0, a.stats?.games ?? 0) : 0)
+  ).slice(0, liveStats.value ? 12 : 8)
 })
 </script>
 
@@ -189,6 +304,24 @@ const suggestions = computed(() => {
 .counter-text-button {border:0;background:none;color:#218c68;font:inherit;font-weight:650;cursor:pointer;}
 .counter-pill {margin:4px 4px 0 0;padding:3px 8px;border:1px solid rgba(88,143,112,.24);border-radius:5px;background:rgba(96,157,120,.08);font:inherit;color:inherit;cursor:pointer;}
 .counter-results-header {margin-bottom:15px;align-items:center;}
+.counter-live {border:1px solid rgba(84,153,124,.28);background:rgba(137,199,164,.065);border-radius:12px;padding:16px 18px;margin-bottom:26px;}
+.counter-live__intro {display:flex;justify-content:space-between;align-items:center;gap:18px;}
+.counter-live__eyebrow {color:#498f6e;font-size:10px;font-weight:700;letter-spacing:.1em;margin-bottom:6px;}
+.counter-live__intro strong {font-size:14px;}
+.counter-live__intro p {font-size:11px;line-height:1.6;opacity:.64;margin:6px 0 0;}
+.counter-live__actions {display:flex;gap:12px;align-items:center;flex-wrap:wrap;flex-shrink:0;}
+.counter-link,.counter-stat-source {font-size:11px;}
+.counter-live__meta {display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:13px;font-size:11px;opacity:.75;}
+.counter-live__error {margin:12px 0 0;font-size:11px;color:#b05d40;line-height:1.6;}
+.counter-live__error span {display:block;}
+.counter-live__hint {font-size:11px;opacity:.54;margin:10px 0 0;line-height:1.5;}
+.counter-stat-line {display:flex;align-items:center;gap:8px;font-size:11px;margin-top:8px;flex-wrap:wrap;}
+.counter-stat-line strong {font-size:16px;color:#4d9d79;}
+.counter-stat-line span {opacity:.68;}
+.counter-stat-source {margin-left:auto;}
+.counter-stat-unknown {font-size:11px;opacity:.5;margin-top:7px;}
+[data-theme='dark'] .counter-live {background:rgba(57,116,85,.10);border-color:rgba(114,188,151,.25);}
+@media(max-width:760px){.counter-live__intro {align-items:flex-start;flex-direction:column;}.counter-live__actions {width:100%;}}
 .counter-results-header h3 {font-size:16px;letter-spacing:-.015em;margin:0 0 3px;font-weight:700;}
 .counter-cards {display:grid;grid-template-columns:1fr;gap:10px;}
 .counter-card {border:1px solid rgba(111,135,147,.22);background:rgba(245,252,249,.43);border-radius:11px;padding:17px;}
